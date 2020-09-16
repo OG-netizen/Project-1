@@ -86,5 +86,5 @@ void sevenSegBlank(){
  * ********************************************************* */
 void loop() {
  
- sevenSegWrite(digit,bAddDecimalPoint);
+ sevenSegWrite(digit,bAddDecimalPoint); // The number 9 will appear on the 7 segment
 }
