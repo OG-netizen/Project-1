@@ -5,6 +5,8 @@ project elevator
 
 We have to build an elevator. Each floor belongs to one individual. We work in a group of 5. So we have 5 floors.
 
+Each individual is responsible for their own floors and make sure that their floor is compatible with the others.
+
 
 
 
