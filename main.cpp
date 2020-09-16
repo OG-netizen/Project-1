@@ -1,10 +1,17 @@
 
 #include <Arduino.h>
 
+
+#define ON 0
+#define OFF 1
+
 int latchPin = 11; // connect to the ST_CP of 74HC595 (pin 3,latch pin)
 int clockPin = 9;  // connect to the SH_CP of 74HC595 (pin 4, clock pin)
 int dataPin = 12;  // connect to the DS of 74HC595 (pin 2)
-int digit = 9;
+int digit = 9; // display the digit
+int IRSensor = 2; // connect ir sensor to arduino pin 2
+int LED = 13; // conect Led to arduino pin 13
+
 byte sevenSegDigits[10] = { B01111011   ,  // = 0
                             B00001001   ,  // = 1
                             B10110011   ,  // = 2
@@ -41,6 +48,9 @@ void setup() {
     pinMode(latchPin, OUTPUT);
     pinMode(clockPin, OUTPUT);
     pinMode(dataPin, OUTPUT);
+
+    pinMode (IRSensor, INPUT); // sensor pin INPUT
+    pinMode (LED, OUTPUT); // Led pin OUTPUT
 }
 
 /* ***********************************************************
@@ -86,5 +96,22 @@ void sevenSegBlank(){
  * ********************************************************* */
 void loop() {
  
- sevenSegWrite(digit,bAddDecimalPoint);
+ 
+
+ 
+
+  int statusSensor = digitalRead (IRSensor);
+  
+  if (statusSensor == ON){
+    digitalWrite(LED, HIGH); 
+    sevenSegWrite(digit,bAddDecimalPoint); // turn on the 7 segement
+  }
+  
+  else 
+  {
+    digitalWrite(LED, LOW); 
+    sevenSegBlank(); // turn off the 7 segement
+  }
+
+     
 }
