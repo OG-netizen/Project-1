@@ -7,6 +7,8 @@ We have to build an elevator. Each floor belongs to one individual. We work in a
 
 Each individual is responsible for their own floors and make sure that their floor is compatible with the others.
 
+The main.cpp is the main code for the elevator. 
+
 
 
 
