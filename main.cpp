@@ -1,3 +1,11 @@
+/*
+
+Name: Bryan Chung 
+Student number: 0990458
+School: Hogeschool Rotterdam
+
+*/
+
 
 #include <Arduino.h>
 
