@@ -1,24 +1,33 @@
+
 /*
 
-Name: Bryan Chung 
-Student number: 0990458
-School: Hogeschool Rotterdam
+name: Bryan Chung
+studentnummer: 0990458
 
 */
 
 
 #include <Arduino.h>
+#include <Wire.h>
 
 
-#define ON 0
-#define OFF 1
+int onvalueUp = 0;
+int onvalueDown = 0; 
+int stateBuzzer = 0;
+int sound = 250;
+unsigned long previousMillis = 0;
 
 int latchPin = 11; // connect to the ST_CP of 74HC595 (pin 3,latch pin)
 int clockPin = 9;  // connect to the SH_CP of 74HC595 (pin 4, clock pin)
 int dataPin = 12;  // connect to the DS of 74HC595 (pin 2)
 int digit = 9; // display the digit
 int IRSensor = 2; // connect ir sensor to arduino pin 2
-int LED = 13; // conect Led to arduino pin 13
+int ButtonUp = 3;
+int ButtonDown = 5;
+int LEDButtonUp = 4;
+int LEDButtonDown = 6;
+#define buzzer 7
+ // conect Led to arduino pin 13
 
 byte sevenSegDigits[10] = { B01111011   ,  // = 0
                             B00001001   ,  // = 1
@@ -58,7 +67,11 @@ void setup() {
     pinMode(dataPin, OUTPUT);
 
     pinMode (IRSensor, INPUT); // sensor pin INPUT
-    pinMode (LED, OUTPUT); // Led pin OUTPUT
+    pinMode(ButtonUp, INPUT);
+    pinMode(ButtonDown, INPUT);
+    pinMode(LEDButtonUp,OUTPUT);
+    pinMode(LEDButtonDown,OUTPUT);
+
 }
 
 /* ***********************************************************
@@ -102,24 +115,85 @@ void sevenSegBlank(){
 /* ***********************************************************
  *                         Void Loop                         *
  * ********************************************************* */
+
+
 void loop() {
  
+
+  
+
  
+  onvalueUp = digitalRead(ButtonUp);
+  onvalueDown = digitalRead(ButtonDown);
+  int detection = digitalRead (IRSensor);
+  
+  
+  if (onvalueUp == HIGH){
+
+   digitalWrite(LEDButtonUp,HIGH);
+   digitalWrite(LEDButtonDown,LOW);
+   
+
+  }else if(onvalueDown == HIGH ){
+
+    
+     digitalWrite(LEDButtonUp,LOW);
+     digitalWrite(LEDButtonDown,HIGH);
+
+
+  }else if(detection == LOW){
+  
+     digitalWrite(LEDButtonUp,LOW);
+     digitalWrite(LEDButtonDown,LOW);
+     sevenSegWrite(digit, bAddDecimalPoint);
+     
+  }else {
+
+    sevenSegBlank();
+  }
+  
 
  
 
-  int statusSensor = digitalRead (IRSensor);
+}
+
+ 
+
+
+   
+
+
+
+
+
+
+ 
   
-  if (statusSensor == ON){
-    digitalWrite(LED, HIGH); 
-    sevenSegWrite(digit,bAddDecimalPoint); // turn on the 7 segement
-  }
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   
-  else 
-  {
-    digitalWrite(LED, LOW); 
-    sevenSegBlank(); // turn off the 7 segement
-  }
+
+
 
      
-}
