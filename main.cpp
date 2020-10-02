@@ -7,6 +7,7 @@ studentnummer: 0990458
 */
 
 
+
 #include <Arduino.h>
 #include <Wire.h>
 
@@ -17,16 +18,19 @@ int stateBuzzer = 0;
 int sound = 250;
 unsigned long previousMillis = 0;
 
+int ledRed = 7;
+int ledGreen = 8;
+
 int latchPin = 11; // connect to the ST_CP of 74HC595 (pin 3,latch pin)
 int clockPin = 9;  // connect to the SH_CP of 74HC595 (pin 4, clock pin)
 int dataPin = 12;  // connect to the DS of 74HC595 (pin 2)
-int digit = 9; // display the digit
+int digit = 5; // display the digit
 int IRSensor = 2; // connect ir sensor to arduino pin 2
 int ButtonUp = 3;
 int ButtonDown = 5;
 int LEDButtonUp = 4;
 int LEDButtonDown = 6;
-#define buzzer 7
+
  // conect Led to arduino pin 13
 
 byte sevenSegDigits[10] = { B01111011   ,  // = 0
@@ -71,6 +75,8 @@ void setup() {
     pinMode(ButtonDown, INPUT);
     pinMode(LEDButtonUp,OUTPUT);
     pinMode(LEDButtonDown,OUTPUT);
+    pinMode(ledGreen,OUTPUT);
+    pinMode(ledRed,OUTPUT);
 
 }
 
@@ -130,8 +136,8 @@ void loop() {
   
   if (onvalueUp == HIGH){
 
-   digitalWrite(LEDButtonUp,HIGH);
-   digitalWrite(LEDButtonDown,LOW);
+    digitalWrite(LEDButtonUp,HIGH);
+    digitalWrite(LEDButtonDown,LOW);
    
 
   }else if(onvalueDown == HIGH ){
@@ -141,20 +147,38 @@ void loop() {
      digitalWrite(LEDButtonDown,HIGH);
 
 
-  }else if(detection == LOW){
+  }
+
+
+
+  if(detection == LOW){
+
+    
   
      digitalWrite(LEDButtonUp,LOW);
      digitalWrite(LEDButtonDown,LOW);
+     digitalWrite(ledGreen,LOW);
+     digitalWrite(ledRed, HIGH );
      sevenSegWrite(digit, bAddDecimalPoint);
+
      
   }else {
-
-    sevenSegBlank();
-  }
-  
+ 
+ 
+     sevenSegBlank();
+     digitalWrite(ledGreen,HIGH);
+     digitalWrite(ledRed, LOW );
 
  
 
+}
+
+ 
+
+
+
+
+ 
 }
 
  
