@@ -12,4 +12,6 @@ The main.cpp is the main code for the elevator.
 
 
 
+A4 -pin 20
+A5 - pin 21
 
