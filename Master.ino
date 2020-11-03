@@ -1,5 +1,9 @@
 #include <Wire.h>
 
+byte currentFloor = 0;
+int CONNECTED_SLAVES = 2;
+
+
 void setup() {
   Wire.begin();        // join i2c bus (address optional for master)
   Serial.begin(9600);// start serial for output
@@ -9,25 +13,52 @@ void setup() {
 void loop() {
 
  
-  Wire.beginTransmission(8);
-  Wire.write(0);
-
-  Wire.endTransmission();
-
-  Wire.requestFrom(8,1);
-
-  while(Wire.available()==0);
-  int number = Wire.read();
-
-    Serial.println(number);
-
-    if (number == 1){
-
-      digitalWrite(13,HIGH);
-    }else{
-      digitalWrite(13,LOW);
-    }
+getAndSendDataToAllFloors();
   
   
 
 }
+
+
+ void getAndSendDataToAllFloors() {
+  
+  for (int i = 0; i < CONNECTED_SLAVES; i++) { 
+    getButtonPressedOfFloor(i); 
+    sendLiftRelatedData(i);
+   
+  }
+}
+
+  void getButtonPressedOfFloor(int floorCount){
+  
+  Wire.requestFrom(floorCount,1);
+
+  int number = Wire.read();
+
+    Serial.println(number);
+
+ if ( number == 1){
+
+       currentFloor = 1;
+   
+  
+ }
+ 
+ if( number == 2){
+     
+     currentFloor = 2;
+
+  
+ }
+
+  }
+
+  void sendLiftRelatedData(int floorCount){
+    
+
+  Wire.beginTransmission(floorCount);               
+  Wire.write(currentFloor);                                        
+  Wire.endTransmission();                  
+ 
+
+  }
