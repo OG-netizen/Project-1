@@ -8,7 +8,7 @@ studentnummer: 0990458
 #include <Arduino.h>
 #include <Wire.h>
 
-
+adress = 0; // jou adress hier typen
 int onvalueUp = LOW;
 int onvalueDown = LOW; 
 byte data[1];
@@ -67,7 +67,7 @@ void setup() {
     pinMode(latchPin, OUTPUT);
     pinMode(clockPin, OUTPUT);
     pinMode(dataPin, OUTPUT);
-    Wire.begin(1);
+    Wire.begin(adress);
     pinMode (IRSensor, INPUT); // sensor pin INPUT
     pinMode(ButtonUp, INPUT);
     pinMode(ButtonDown, INPUT);
@@ -194,7 +194,7 @@ void SensorState(){
   
   else
   {
-    detection = 2;
+    detection = adress;
   }
 
   data[0] = detection;
