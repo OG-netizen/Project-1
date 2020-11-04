@@ -8,7 +8,7 @@ studentnummer: 0990458
 #include <Arduino.h>
 #include <Wire.h>
 
-adress = 0; // jou adress hier typen
+adress = 1; // jou adress hier typen
 int onvalueUp = LOW;
 int onvalueDown = LOW; 
 byte data[1];
