@@ -5,15 +5,16 @@ studentnummer: 0990458
 
 
 
+
 #include <Arduino.h>
 #include <Wire.h>
 
-int adress = 1; // jou adress hier typen
+int adress = 2;
 int onvalueUp = LOW;
 int onvalueDown = LOW; 
-byte data[1];
+byte data[3];
 int liftPosition = 0;
-
+int OpenLift = 0;
 
 
 int ledRed = 7;
@@ -67,7 +68,9 @@ void setup() {
     pinMode(latchPin, OUTPUT);
     pinMode(clockPin, OUTPUT);
     pinMode(dataPin, OUTPUT);
-    Wire.begin(adress);
+     Wire.begin(adress);                // join i2c bus with address #0
+     Wire.onRequest(requestEvent); // register event
+     Wire.onReceive(getLiftRelatedData);
     pinMode (IRSensor, INPUT); // sensor pin INPUT
     pinMode(ButtonUp, INPUT);
     pinMode(ButtonDown, INPUT);
@@ -76,9 +79,7 @@ void setup() {
     pinMode(ledGreen,OUTPUT);
     pinMode(ledRed,OUTPUT);
     Serial.begin(9600);
-     Wire.onRequest(requestEvent); // register event
-     Wire.onReceive(getLiftRelatedData);
-
+   
 }
 
 /* ***********************************************************
@@ -137,13 +138,14 @@ SensorState();
   
   if (onvalueUp == HIGH){
 
+     ButtonState(1,0);
     digitalWrite(LEDButtonUp,HIGH);
     digitalWrite(LEDButtonDown,LOW);
     Serial.println("Off");
 
   }else if(onvalueDown == HIGH ){
 
-    
+     ButtonState(0,1);
      digitalWrite(LEDButtonUp,LOW);
      digitalWrite(LEDButtonDown,HIGH);
      Serial.println("On");
@@ -153,32 +155,32 @@ SensorState();
 
 
   if(detection == LOW){
-
-    
   
      digitalWrite(LEDButtonUp,LOW);
      digitalWrite(LEDButtonDown,LOW);
-     digitalWrite(ledGreen,LOW);
      digitalWrite(ledRed, HIGH );
+     digitalWrite(ledGreen, LOW );
+     
+  }else  {
 
      
-  }else {
- 
- 
-     digitalWrite(ledGreen,HIGH);
+     digitalWrite(ledRed, LOW ); 
+     digitalWrite(ledGreen, HIGH );
      
-     digitalWrite(ledRed, LOW );
-
- 
-
 }
+
+
+
+
+
+  
 
 }
 
 void requestEvent() {
 
   
-  Wire.write(data,1); // respond with message of 6 bytes
+  Wire.write(data,3); // respond with message of 6 bytes
   // as expected by master
 }
 
@@ -190,15 +192,18 @@ void SensorState(){
  
   if (detection == 1){
     detection = 0;
+    ButtonState(0,0);
+     
   }
   
   else
   {
+    
     detection = adress;
+    ButtonState(2,2);
   }
 
   data[0] = detection;
-
   
   
 }
@@ -206,10 +211,13 @@ void SensorState(){
 void getLiftRelatedData() {
   // Get liftPosition and show it on LED display
   liftPosition = Wire.read(); // Receive byte containing current lift position
+  OpenLift = Wire.read();
   Serial.println(liftPosition);
+  Serial.println(OpenLift);
   displayLed(liftPosition);
+  check(OpenLift);
 
- 
+
   
 }
 
@@ -217,8 +225,56 @@ void getLiftRelatedData() {
 void displayLed(int x){
 
 sevenSegWrite(x,bAddDecimalPoint); // The number 9 will appear on the 7 segment
- 
+  
 }
+
+void check(int x){
+
+
+
+  
+}
+
+void ButtonState(int x, int y){
+
+ 
+  
+  int stateUp,stateDown;
+  int on = 1;
+  int off = 0;
+
+ if (x == 1 && y == 0){
+
+  stateUp = 1;
+  stateDown = 0;
+  
+ }
+
+ if (x == 0 && y == 1){
+
+    stateUp = 0;
+    stateDown = 1;
+  
+ }
+
+ if(x == 2 && y == 2){
+  
+    stateUp = 2;
+    stateDown = 2;
+
+ }
+
+ 
+   data[1] = stateUp;
+   data[2] = stateDown;
+
+}
+
+  
+
+
+ 
+
 
 
 
