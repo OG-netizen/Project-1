@@ -4,7 +4,9 @@ const int latchPin = 11;//Pin connected to ST_CP of 74HC595
 const int clockPin = 9;//Pin connected to SH_CP of 74HC595
 const int dataPin = 12; //Pin connected to DS of 74HC595
 
-#define led_lift 8
+
+#define ledRed = 7;
+#define ledGreen = 8;
 
 #define knopl 3
 #define knopr 5
@@ -49,7 +51,7 @@ void setup ()
 
 {
   //set pins to output
-  Wire.begin(2);
+  Wire.begin(3);
   Wire.onRequest(gegevens_naar_de_master); // register event
   Wire.onReceive(receiveEvent);
   Serial.begin(9600);
@@ -120,7 +122,8 @@ void loop()
     waar = 1 ;
     omhoog = false;
     omlaag = false;
-    digitalWrite(led_lift, HIGH);
+    digitalWrite(ledGreen, HIGH);
+    digitalWrite(ledRed, LOW);
     digitalWrite(knopl_led, LOW);
     digitalWrite(knopr_led, LOW);
     //Serial.println("OBSTACLE!!, OBSTACLE!!");
@@ -133,7 +136,8 @@ void loop()
 
   } else {
     waar = 1 ;
-    digitalWrite(led_lift, LOW);
+    digitalWrite(ledGreen, LOW);
+    digitalWrite(ledRed,  HIGH);
     digitalWrite(latchPin, LOW);
     shiftOut(dataPin, clockPin, MSBFIRST, datArray[seven]);//datArray[seven]
     digitalWrite(latchPin, HIGH);
